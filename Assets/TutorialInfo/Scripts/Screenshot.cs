@@ -10,6 +10,7 @@ public class ScreenShot : MonoBehaviour
     private int resWidth;
     private int resHeight;
     string path;
+
     // Use this for initialization
     void Start()
     {
@@ -17,6 +18,7 @@ public class ScreenShot : MonoBehaviour
         resHeight = Screen.height;
         path = Application.dataPath + "/ScreenShot/";
         Debug.Log(path);
+
     }
 
     public void ClickScreenShot()
