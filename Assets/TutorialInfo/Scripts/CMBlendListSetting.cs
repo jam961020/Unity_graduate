@@ -22,6 +22,7 @@ public class CMBlendListSetting : MonoBehaviour
         vCamObj2 = GameObject.Find("MainVcam");
         vCam1 = vCamObj1.GetComponent<CinemachineVirtualCameraBase>();
         vCam2 = vCamObj2.GetComponent<CinemachineVirtualCameraBase>();
+        blendList.m_Instructions[0].m_Hold = 9999.0f;
     }
 
     public void buttonLeft()

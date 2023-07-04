@@ -5,17 +5,22 @@ using System.IO;
 
 public class ScreenShot : MonoBehaviour
 {
-    public Camera camera;       //보여지는 카메라.
+    public Camera around_camera;       //보여지는 카메라.
 
     private int resWidth;
     private int resHeight;
     string path;
 
+    RaycastHit hit;
+
     // Use this for initialization
     void Start()
     {
+        //Debug.Log(camera.name + " : \n" + camera.projectionMatrix);
         resWidth = Screen.width;
         resHeight = Screen.height;
+        resWidth = 1920;
+        resHeight = 1280;
         path = Application.dataPath + "/ScreenShot/";
         Debug.Log(path);
 
@@ -23,31 +28,35 @@ public class ScreenShot : MonoBehaviour
 
     public void ClickScreenShot()
     {
+        //if (Physics.Raycast(camera.transform.position,Vector3.up,out hit,MaxDistance))
+        //{
+        //    Debug.Log(hit.distance);
+        //}
         DirectoryInfo dir = new DirectoryInfo(path);
         if (!dir.Exists)
         {
             Directory.CreateDirectory(path);
         }
         string name;
-        if (camera.name == "Camera_NE")
+        if (around_camera.name == "Camera_N")
         {
-            name = path + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-NE") + ".png";
-        } else if (camera.name == "Camera_NW")
+            name = path + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-N") + ".png";
+        } else if (around_camera.name == "Camera_W")
         {
-            name = path + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-NW") + ".png";
-        } else if (camera.name == "Camera_SE")
+            name = path + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-W") + ".png";
+        } else if (around_camera.name == "Camera_E")
         {
-            name = path + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-SE") + ".png";
+            name = path + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-E") + ".png";
         } else
         {
-            name = path + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-SW") + ".png";
+            name = path + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-S") + ".png";
         }
         
         RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
-        camera.targetTexture = rt;
+        around_camera.targetTexture = rt;
         Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
         Rect rec = new Rect(0, 0, screenShot.width, screenShot.height);
-        camera.Render();
+        around_camera.Render();
         RenderTexture.active = rt;
         screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
         screenShot.Apply();
