@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using UnityEngine;
 using System.Threading;
-
 public class UnitytoPython_Socket : MonoBehaviour
 {
     Thread mThread;
@@ -18,10 +17,9 @@ public class UnitytoPython_Socket : MonoBehaviour
     bool running;
     private void Update()
     {
-        transform.position = receivedPos;
+        transform.position = receivedPos; //assigning receivedPos in SendAndReceiveData()
     }
-    // Start is called before the first frame update
-    public void Start()
+    private void Start()
     {
         ThreadStart ts = new ThreadStart(GetInfo);
         mThread = new Thread(ts);
@@ -44,28 +42,47 @@ public class UnitytoPython_Socket : MonoBehaviour
     {
         NetworkStream nwStream = client.GetStream();
         byte[] buffer = new byte[client.ReceiveBufferSize];
-        int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
-        string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+        //---receiving Data from the Host----
+        int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize); //Getting data in Bytes from Python
+        string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead); //Converting byte data to string
         if (dataReceived != null)
         {
-            receivedPos = StringToVector3(dataReceived);
+            //---Using received data---
+            receivedPos = StringToVector3(dataReceived); //<-- assigning receivedPos value from Python
             print("received pos data, and moved the Cube!");
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("Hey I got your message Python! Do You see this message?");
-            nwStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            //---Sending Data to Host----
+            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("Hey I got your message Python! Do You see this massage?"); //Converting string to byte data
+            nwStream.Write(myWriteBuffer, 0, myWriteBuffer.Length); //Sending the data in Bytes to Python
         }
     }
     public static Vector3 StringToVector3(string sVector)
     {
+        // Remove the parentheses
         if (sVector.StartsWith("(") && sVector.EndsWith(")"))
         {
             sVector = sVector.Substring(1, sVector.Length - 2);
         }
+        // split the items
         string[] sArray = sVector.Split(',');
-
+        // store as a Vector3
         Vector3 result = new Vector3(
             float.Parse(sArray[0]),
             float.Parse(sArray[1]),
             float.Parse(sArray[2]));
         return result;
     }
+    /*
+    public static string GetLocalIPAddress()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        throw new System.Exception("No network adapters with an IPv4 address in the system!");
+    }
+    */
 }

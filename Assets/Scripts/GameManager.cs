@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using System.Diagnostics;
-using UnityEditor.Scripting.Python;
 
 public class GameManager : MonoBehaviour
 {

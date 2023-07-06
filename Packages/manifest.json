@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.matthewminer.consolation": "file:F:/graduate2/consolation-master",
     "com.unity.collab-proxy": "2.0.0",
     "com.unity.feature.cinematic": "1.0.0",
     "com.unity.ide.rider": "3.0.18",
