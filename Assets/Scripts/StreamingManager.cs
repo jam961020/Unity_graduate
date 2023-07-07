@@ -13,7 +13,7 @@ public class StreamingManager : MonoBehaviour
     public Camera streamcamera;
     private int resWidth;
     private int resHeight;
-    string path;
+    public string path;
     string unitypath;
     string pythonpath;
     // Start is called before the first frame update
@@ -23,10 +23,13 @@ public class StreamingManager : MonoBehaviour
         Application.targetFrameRate = 30;
 
         //toggleManager = GetComponent<ToggleManager>();
-        resWidth = 1920;
-        resHeight = 1280;
+        resWidth = 640;
+        resHeight = 360;
 
         path = @"C:\Users\" + Environment.UserName + @"\UnityGraduate\";
+
+        unitypath = path + @"UnityStream\";
+        pythonpath = path + @"PythonStream\";
     }
 #if UNITY_EDITOR
     [MenuItem("test/username")]
@@ -42,8 +45,6 @@ public class StreamingManager : MonoBehaviour
 
     void makedir()
     {
-        unitypath = path + @"UnityStream\";
-        pythonpath = path + @"PythonStream";
 
         DirectoryInfo dirUnity = new DirectoryInfo(unitypath);
         DirectoryInfo dirPython = new DirectoryInfo(pythonpath);
@@ -60,9 +61,12 @@ public class StreamingManager : MonoBehaviour
 
     public void removedir(string delpath)
     {
+
+        if (delpath == null) return;
+
         DirectoryInfo dirdelpath = new DirectoryInfo(delpath);
 
-        if (dirdelpath.Exists)
+        if (dirdelpath.Exists && delpath != null)
         {
             File.SetAttributes(delpath, FileAttributes.Normal);
 
@@ -77,6 +81,17 @@ public class StreamingManager : MonoBehaviour
                 File.Delete(_file);
             }
             Directory.Delete(delpath);
+        }
+    }
+
+    void removepydir()
+    {
+        if (pythonpath == null) return;
+
+        foreach (string _file in Directory.GetFiles(pythonpath))
+        {
+            File.SetAttributes(_file, FileAttributes.Normal);
+            File.Delete(_file);
         }
     }
 
@@ -110,7 +125,12 @@ public class StreamingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
 
+
+    }
+
+    private void OnApplicationQuit()
+    {
+        removepydir();
     }
 }

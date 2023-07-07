@@ -8,12 +8,20 @@ public class ToggleManager : MonoBehaviour
     private Toggle toggle;
     private Text toggletext;
     private StreamingManager streamingManager;
+    private SocketManager socketManager;
+    private string ImgPath;
     int framecounter;
     // Start is called before the first frame update
 
-    bool State()
+    public bool State()
     {
         return toggle.isOn;
+    }
+
+    public string ImgPathreturn()
+    {
+        if (toggle.isOn) return ImgPath;
+        else return null;
     }
 
     void Start()
@@ -21,10 +29,12 @@ public class ToggleManager : MonoBehaviour
         toggle = GetComponent<Toggle>();
         toggletext = toggle.GetComponentInChildren<Text>();
         streamingManager = GetComponent<StreamingManager>();
+        socketManager = GetComponent<SocketManager>();
         framecounter = 0;
 
-        streamingManager.removedir(streamingManager.unityPath());
         toggle.isOn = false;
+        //streamingManager.removedir(streamingManager.unityPath());
+        
     }
 
     // Update is called once per frame
@@ -33,14 +43,18 @@ public class ToggleManager : MonoBehaviour
         if (toggle.isOn)
         {
             toggletext.text = "Running";
-            framecounter++;
-            streamingManager.Stream(framecounter);
+            if (framecounter == 0 || socketManager.RecevingPath())
+            {
+                framecounter++;
+                ImgPath = streamingManager.Stream(framecounter);
+            }
         }
         else
         {
             toggletext.text = "Stop";
             framecounter = 0;
             streamingManager.removedir(streamingManager.unityPath());
+            ImgPath = null;
         }
     }
 }
