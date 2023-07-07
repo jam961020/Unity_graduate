@@ -29,7 +29,7 @@ public class StreamingManager : MonoBehaviour
         path = @"C:\Users\" + Environment.UserName + @"\UnityGraduate\";
 
         unitypath = path + @"UnityStream\";
-        pythonpath = path + @"PythonStream";
+        pythonpath = path + @"PythonStream\";
     }
 #if UNITY_EDITOR
     [MenuItem("test/username")]
@@ -66,7 +66,7 @@ public class StreamingManager : MonoBehaviour
 
         DirectoryInfo dirdelpath = new DirectoryInfo(delpath);
 
-        if (dirdelpath.Exists && delpath !=null)
+        if (dirdelpath.Exists && delpath != null)
         {
             File.SetAttributes(delpath, FileAttributes.Normal);
 
@@ -81,6 +81,17 @@ public class StreamingManager : MonoBehaviour
                 File.Delete(_file);
             }
             Directory.Delete(delpath);
+        }
+    }
+
+    void removepydir()
+    {
+        if (pythonpath == null) return;
+
+        foreach (string _file in Directory.GetFiles(pythonpath))
+        {
+            File.SetAttributes(_file, FileAttributes.Normal);
+            File.Delete(_file);
         }
     }
 
@@ -114,7 +125,12 @@ public class StreamingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
 
+
+    }
+
+    private void OnApplicationQuit()
+    {
+        removepydir();
     }
 }
