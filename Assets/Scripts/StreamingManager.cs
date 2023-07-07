@@ -23,8 +23,8 @@ public class StreamingManager : MonoBehaviour
         Application.targetFrameRate = 30;
 
         //toggleManager = GetComponent<ToggleManager>();
-        resWidth = 1920;
-        resHeight = 1280;
+        resWidth = 640;
+        resHeight = 360;
 
         path = @"C:\Users\" + Environment.UserName + @"\UnityGraduate\";
     }

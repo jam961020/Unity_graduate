@@ -23,8 +23,9 @@ public class ToggleManager : MonoBehaviour
         streamingManager = GetComponent<StreamingManager>();
         framecounter = 0;
 
-        streamingManager.removedir(streamingManager.unityPath());
         toggle.isOn = false;
+        streamingManager.removedir(streamingManager.unityPath());
+        
     }
 
     // Update is called once per frame
