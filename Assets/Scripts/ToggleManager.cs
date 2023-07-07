@@ -8,6 +8,7 @@ public class ToggleManager : MonoBehaviour
     private Toggle toggle;
     private Text toggletext;
     private StreamingManager streamingManager;
+    private SocketManager socketManager;
     int framecounter;
     // Start is called before the first frame update
 
@@ -21,10 +22,11 @@ public class ToggleManager : MonoBehaviour
         toggle = GetComponent<Toggle>();
         toggletext = toggle.GetComponentInChildren<Text>();
         streamingManager = GetComponent<StreamingManager>();
+        socketManager = GetComponent<SocketManager>();
         framecounter = 0;
 
         toggle.isOn = false;
-        streamingManager.removedir(streamingManager.unityPath());
+        //streamingManager.removedir(streamingManager.unityPath());
         
     }
 
@@ -34,8 +36,11 @@ public class ToggleManager : MonoBehaviour
         if (toggle.isOn)
         {
             toggletext.text = "Running";
-            framecounter++;
-            streamingManager.Stream(framecounter);
+            if (framecounter == 0 || socketManager.RecevingPath())
+            {
+                framecounter++;
+                streamingManager.Stream(framecounter);
+            }
         }
         else
         {
