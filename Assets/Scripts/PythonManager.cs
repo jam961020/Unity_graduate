@@ -65,4 +65,14 @@ public class PythonManager : MonoBehaviour
     {
         
     }
+
+    private void OnApplicationQuit()
+    {
+        if (!py.HasExited)
+        {
+            py.Kill();
+            py.WaitForExit();
+        }
+    }
 }
+

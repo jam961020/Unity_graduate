@@ -22,7 +22,7 @@ public class ScreenShot : MonoBehaviour
         resWidth = 1920;
         resHeight = 1280;
         path = Application.dataPath + "/ScreenShot/";
-        Debug.Log(path);
+        //Debug.Log(path);
 
     }
 

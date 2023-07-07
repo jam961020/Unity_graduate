@@ -17,7 +17,7 @@ public class SocketManager : MonoBehaviour
     string streamImagePath;
     bool running;
     bool IsRecevingPath;
-    StreamingManager streamingManager;
+    ToggleManager toggleManager;
 
     void GetInfo()
     {
@@ -28,8 +28,14 @@ public class SocketManager : MonoBehaviour
         running = true;
         while(running)
         {
-            IsRecevingPath = SendAndReceiveData();
+            
+            if (toggleManager.ImgPathreturn()!=null)
+            {
+                Debug.Log("test");
+                IsRecevingPath = SendAndReceiveData();
+            }
         }
+        Debug.Log("disconnect");
         listener.Stop();
     }
 
@@ -37,12 +43,15 @@ public class SocketManager : MonoBehaviour
     {
         NetworkStream nwStream = client.GetStream();
 
-        byte[] myWriteBuffer = Encoding.ASCII.GetBytes(streamingManager.unityPath());
+        byte[] myWriteBuffer = Encoding.ASCII.GetBytes(toggleManager.ImgPathreturn());
         nwStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
         byte[] buffer = new byte[client.ReceiveBufferSize];
-        // 호스트로 부터 받은 데이터라는데 잘 모르겠다.
-        int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
+        int bytesRead = 0;
+        while (bytesRead == 0) // 데이터를 수신할 때까지 블로킹
+        {
+            bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
+        }
         string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
         if (dataReceived != null)
         {
@@ -50,7 +59,10 @@ public class SocketManager : MonoBehaviour
             Debug.Log("receving");
             return true;
         }
-        else return false;
+        else
+        {
+            return false;
+        }
     }
     public bool RecevingPath()
     {
@@ -59,7 +71,7 @@ public class SocketManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        streamingManager = GetComponent<StreamingManager>();
+        toggleManager = GetComponent<ToggleManager>();
         ThreadStart ts = new ThreadStart(GetInfo);
         mThread = new Thread(ts);
         mThread.Start();

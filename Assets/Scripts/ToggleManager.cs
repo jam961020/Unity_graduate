@@ -9,12 +9,19 @@ public class ToggleManager : MonoBehaviour
     private Text toggletext;
     private StreamingManager streamingManager;
     private SocketManager socketManager;
+    private string ImgPath;
     int framecounter;
     // Start is called before the first frame update
 
-    bool State()
+    public bool State()
     {
         return toggle.isOn;
+    }
+
+    public string ImgPathreturn()
+    {
+        if (toggle.isOn) return ImgPath;
+        else return null;
     }
 
     void Start()
@@ -39,7 +46,7 @@ public class ToggleManager : MonoBehaviour
             if (framecounter == 0 || socketManager.RecevingPath())
             {
                 framecounter++;
-                streamingManager.Stream(framecounter);
+                ImgPath = streamingManager.Stream(framecounter);
             }
         }
         else
@@ -47,6 +54,7 @@ public class ToggleManager : MonoBehaviour
             toggletext.text = "Stop";
             framecounter = 0;
             streamingManager.removedir(streamingManager.unityPath());
+            ImgPath = null;
         }
     }
 }
