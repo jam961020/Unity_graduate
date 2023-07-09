@@ -15,6 +15,8 @@ public class SocketManager : MonoBehaviour
     TcpListener listener;
     TcpClient client;
     string streamImagePath;
+    string temp;
+    string sendpath;
     bool running;
     bool IsRecevingPath;
     ToggleManager toggleManager;
@@ -28,11 +30,12 @@ public class SocketManager : MonoBehaviour
         running = true;
         while(running)
         {
-            
-            if (toggleManager.ImgPathreturn()!=null)
+            sendpath = toggleManager.ImgPathreturn();
+            if (sendpath!=null)
             {
-                Debug.Log("test");
+                //Debug.Log(sendpath);
                 IsRecevingPath = SendAndReceiveData();
+                Debug.Log(sendpath);
             }
         }
         Debug.Log("disconnect");
@@ -43,7 +46,8 @@ public class SocketManager : MonoBehaviour
     {
         NetworkStream nwStream = client.GetStream();
 
-        byte[] myWriteBuffer = Encoding.ASCII.GetBytes(toggleManager.ImgPathreturn());
+        
+        byte[] myWriteBuffer = Encoding.ASCII.GetBytes(sendpath);
         nwStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
         byte[] buffer = new byte[client.ReceiveBufferSize];
@@ -80,6 +84,11 @@ public class SocketManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(IsRecevingPath) Debug.Log(streamImagePath);
+
+        if (IsRecevingPath && temp != streamImagePath)
+        {
+            Debug.Log(streamImagePath);
+            temp = streamImagePath;
+        }
     }
 }

@@ -19,8 +19,8 @@ public class ScreenShot : MonoBehaviour
         //Debug.Log(camera.name + " : \n" + camera.projectionMatrix);
         resWidth = Screen.width;
         resHeight = Screen.height;
-        resWidth = 1920;
-        resHeight = 1280;
+        resWidth = 640;
+        resHeight = 360;
         path = Application.dataPath + "/ScreenShot/";
         //Debug.Log(path);
 
