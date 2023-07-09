@@ -24,6 +24,11 @@ public class ToggleManager : MonoBehaviour
         else return null;
     }
 
+    public int framecounter_return()
+    {
+        return framecounter;
+    }
+
     void Start()
     {
         toggle = GetComponent<Toggle>();
@@ -45,8 +50,9 @@ public class ToggleManager : MonoBehaviour
             toggletext.text = "Running";
             if (framecounter == 0 || socketManager.RecevingPath())
             {
-                framecounter++;
+                
                 ImgPath = streamingManager.Stream(framecounter);
+                framecounter++;
             }
         }
         else
