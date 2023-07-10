@@ -119,6 +119,10 @@ public class StreamingManager : MonoBehaviour
         byte[] bytes = screenShot.EncodeToPNG();
         File.WriteAllBytes(name, bytes);
 
+        Destroy(rt);
+        Destroy(screenShot);
+        
+
         return name;
     }
 
