@@ -35,7 +35,7 @@ public class SocketManager : MonoBehaviour
             {
                 //Debug.Log(sendpath);
                 IsRecevingPath = SendAndReceiveData();
-                Debug.Log(sendpath);
+                //Debug.Log(sendpath);
             }
         }
         Debug.Log("disconnect");
@@ -85,10 +85,11 @@ public class SocketManager : MonoBehaviour
     void Update()
     {
 
-        if (IsRecevingPath && temp != streamImagePath)
+        /*if (IsRecevingPath && temp != streamImagePath)
         {
             Debug.Log(streamImagePath);
             temp = streamImagePath;
-        }
+        }*/
+        Debug.Log(streamImagePath);
     }
 }
