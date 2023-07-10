@@ -58,7 +58,6 @@ public class ToggleManager : MonoBehaviour
         else
         {
             toggletext.text = "Stop";
-            framecounter = 0;
             streamingManager.removedir(streamingManager.unityPath());
             ImgPath = null;
         }
