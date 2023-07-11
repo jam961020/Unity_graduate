@@ -33,9 +33,7 @@ public class SocketManager : MonoBehaviour
             sendpath = toggleManager.ImgPathreturn();
             if (sendpath!=null)
             {
-                //Debug.Log(sendpath);
                 IsRecevingPath = SendAndReceiveData();
-                //Debug.Log(sendpath);
             }
         }
         Debug.Log("disconnect");

@@ -23,10 +23,11 @@ public class TextureManager : MonoBehaviour
         if (byteTexture.Length > 0)
         {
             change_img = texture;
-            if (change_img != null) Texture2D.Destroy(change_img);
             texture = new Texture2D(0, 0);
             texture.LoadImage(byteTexture);
             streaming.texture = texture;
+            if (change_img != null) Texture2D.Destroy(change_img);
+            
         }
     }
 
