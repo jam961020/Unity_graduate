@@ -12,7 +12,7 @@ public class PythonManager : MonoBehaviour
 {
     Process py = new Process();
     string pyPath = @"C:\Users\" + Environment.UserName + @"\UnityGraduate\";
-    string yourPythonPath = "C:/Users/user/yolov5-master/venvyolo/Scripts/python.exe";
+    string yourPythonPath = "python";
 
 #if UNITY_EDITOR
     //테스트용, 에디터에서만 실행가능
