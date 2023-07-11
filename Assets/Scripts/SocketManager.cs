@@ -90,4 +90,12 @@ public class SocketManager : MonoBehaviour
         }*/
         Debug.Log(streamImagePath);
     }
+
+    private void OnApplicationQuit()
+    {
+        running = false;
+        listener?.Stop();
+        client?.Close();
+        mThread?.Join();
+    }
 }
