@@ -20,7 +20,7 @@ public class ScreenShot : MonoBehaviour
         resWidth = Screen.width;
         resHeight = Screen.height;
         resWidth = 640;
-        resHeight = 360;
+        resHeight = 480;
         path = Application.dataPath + "/ScreenShot/";
         //Debug.Log(path);
 
