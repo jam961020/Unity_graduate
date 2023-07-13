@@ -10,7 +10,10 @@ using UnityEditor;
 public class StreamingManager : MonoBehaviour
 {
     private ToggleManager toggleManager;
-    public Camera streamcamera;
+    public Camera streamcameraN;
+    public Camera streamcameraS;
+    public Camera streamcameraW;
+    public Camera streamcameraE;
     private int resWidth;
     private int resHeight;
     public string path;
@@ -20,11 +23,11 @@ public class StreamingManager : MonoBehaviour
     void Start()
     {
         QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 30;
+        Application.targetFrameRate = 24;
 
         //toggleManager = GetComponent<ToggleManager>();
         resWidth = 640;
-        resHeight = 360;
+        resHeight = 480;
 
         path = @"C:\Users\" + Environment.UserName + @"\UnityGraduate\";
 
@@ -100,12 +103,29 @@ public class StreamingManager : MonoBehaviour
         return unitypath;
     }
 
-    public string Stream(int count)
+    public string Streamall(int count)
+    {
+        string rawname;
+
+        rawname = Stream(streamcameraN, "N", count);
+        Stream(streamcameraE, "E", count);
+        Stream(streamcameraS, "S", count);
+        Stream(streamcameraW, "W", count);
+
+        return rawname;
+
+    }
+
+    public string Stream(Camera streamcamera,string cameraname,int count)
     {
         makedir();
 
         string name;
-        name = unitypath + "Image" + count.ToString() + ".png";
+        string rawname;
+
+        name = unitypath + "Image" + count.ToString() + cameraname +".png";
+        rawname = unitypath + "Image" + count.ToString();
+
 
         RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
         streamcamera.targetTexture = rt;
@@ -123,7 +143,7 @@ public class StreamingManager : MonoBehaviour
         Destroy(screenShot);
         
 
-        return name;
+        return rawname;
     }
 
     // Update is called once per frame

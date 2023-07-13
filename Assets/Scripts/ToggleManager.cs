@@ -51,7 +51,7 @@ public class ToggleManager : MonoBehaviour
             if (framecounter == 0 || socketManager.RecevingPath())
             {
                 
-                ImgPath = streamingManager.Stream(framecounter);
+                ImgPath = streamingManager.Streamall(framecounter);
                 framecounter++;
             }
         }
