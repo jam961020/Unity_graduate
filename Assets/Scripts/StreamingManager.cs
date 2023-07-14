@@ -14,6 +14,7 @@ public class StreamingManager : MonoBehaviour
     public Camera streamcameraS;
     public Camera streamcameraW;
     public Camera streamcameraE;
+    public int FOV;
     private int resWidth;
     private int resHeight;
     public string path;
@@ -149,7 +150,10 @@ public class StreamingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        streamcameraE.fieldOfView = FOV;
+        streamcameraN.fieldOfView = FOV;
+        streamcameraW.fieldOfView = FOV;
+        streamcameraS.fieldOfView = FOV;
 
     }
 
