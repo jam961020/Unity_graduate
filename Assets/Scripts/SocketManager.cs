@@ -31,7 +31,7 @@ public class SocketManager : MonoBehaviour
         while(running)
         {
             sendpath = toggleManager.ImgPathreturn();
-            Debug.Log(sendpath);
+            //Debug.Log(sendpath);
             if (sendpath!=null)
             {
                 IsRecevingPath = SendAndReceiveData();
