@@ -5,6 +5,7 @@ using System;
 using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
+using System.Diagnostics;
 #endif
 
 public class StreamingManager : MonoBehaviour
@@ -41,7 +42,7 @@ public class StreamingManager : MonoBehaviour
     {
         string path = @"C:\Users\" + Environment.UserName + @"\test\" + @"intothetest\";
 
-        Debug.Log(path);
+        UnityEngine.Debug.Log(path);
 
         Directory.CreateDirectory(path);
     }
@@ -161,4 +162,6 @@ public class StreamingManager : MonoBehaviour
     {
         removepydir();
     }
+
+
 }
