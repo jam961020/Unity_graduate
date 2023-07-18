@@ -21,12 +21,36 @@ count = 0
 
 teststring = "hi_there?"
 temp = ""
-receivedData = r"C:\Users\user\UnityGraduate\UnityStreamtest\Image0"
+receivedData = r"C:\Users\user\UnityGraduate\UnityStreamtest\87"
 
 def exit_handler():
     exitmsg = "bye bye!"
     test2(exitmsg)
     
+def warpping2(img): #원근변환 함수
+
+
+    # 이미지의 높이, 너비 픽셀 좌표
+    h = img.shape[0]
+    w = img.shape[1]
+
+    # 대입할 이미지 중심 설정
+    shift_w = w / 2
+    shift_h = 0
+
+    # 원본 이미지 좌표 [x,y] (좌상 좌하 우상 우하)
+    # 화각 87도 기준
+    ori_coordinate = np.float32([[50, 0], [21, 411], [590, 0], [611, 404]])
+
+    # 대입할 이미지 좌표 (좌상 좌하 우상 우하) 한칸이 15
+    warped_coordinate = np.float32([[shift_w - 59, shift_h], [shift_w - 278, shift_h + 300], [shift_w + 59, shift_h], [shift_w + 255, shift_h + 278]])
+
+    # 3X3 변환 행렬 생성
+    Matrix = cv2.getPerspectiveTransform(ori_coordinate, warped_coordinate)
+
+    # 원근 변환
+    warped_img = cv2.warpPerspective(img, Matrix, (w, h))
+    return warped_img
 
 
 def warpping(img): #원근변환 함수
@@ -44,7 +68,7 @@ def warpping(img): #원근변환 함수
 
     # 원본 이미지 좌표 [x,y] (좌상 좌하 우상 우하)
     #화각 87도 기준
-    ori_coordinate = np.float32([[50, 0], [135, 172], [590, 0], [505, 172]])
+    ori_coordinate = np.float32([[51, 0], [135, 172], [588, 0], [505, 172]])
 
     #대입할 이미지 좌표 (좌상 좌하 우상 우하) 한칸이 15
     warped_coordinate = np.float32([[shift_w-60, shift_h], [shift_w-60, shift_h+40], [shift_w+60, shift_h], [shift_w+60, shift_h+40]])
@@ -75,10 +99,10 @@ receiveImgS = cv2.imread(receivedData + "S.png")
 receiveImgE = cv2.imread(receivedData + "E.png")
 receiveImgW = cv2.imread(receivedData + "W.png")
 
-warp_N = warpping(receiveImgN)
-warp_W = warpping(receiveImgW)
-warp_S = warpping(receiveImgS)
-warp_E = warpping(receiveImgE)
+warp_N = warpping2(receiveImgN)
+warp_W = warpping2(receiveImgW)
+warp_S = warpping2(receiveImgS)
+warp_E = warpping2(receiveImgE)
 
 #이미지 방향에 맞게 회전시키기
 warp_W = imutils.rotate_bound(warp_W, 270)
@@ -124,7 +148,7 @@ h2, w2, c2 = warp_N.shape
 
 #이격 19
 #검정색 배경 이미지 생성
-inn = 19
+inn = 14
 b_w = 960+inn*2
 b_h = 960+inn*2
 background = np.zeros((b_w, b_h, 3), dtype=np.uint8)*255
@@ -134,6 +158,8 @@ background = np.zeros((b_w, b_h, 3), dtype=np.uint8)*255
 #480-320 : 480+320
 background[160+inn:800+inn, 0:w1] = warp_E
 background[160+inn:800+inn, w1+inn*2:b_w] = warp_W
+
+cv2.imshow('we',background)
 
 #or연산을 이용하여 배경이미지에 상하 이미지 합성
 roiN = background[0:h2, 160+inn:800+inn]

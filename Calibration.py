@@ -103,35 +103,83 @@ while True:
         #480 640
         h2, w2, c2 = warp_N.shape
 
-        #이격 19
+        #이격 20
         #검정색 배경 이미지 생성
-        inn = 19
+        inn = 20
         b_w = 960+inn*2
         b_h = 960+inn*2
-        background = np.zeros((b_w, b_h, 3), dtype=np.uint8)*255
+        background1 = np.zeros((b_w, b_h, 3), dtype=np.uint8)*255
+        background2 = np.zeros((b_w, b_h, 3), dtype=np.uint8)*255
 
-        #배경 이미지에 좌우 이미지 합성
-        #이미지 크기 640*480
-        #480-320 : 480+320
-        background[160+inn:800+inn, 0:w1] = warp_E
-        background[160+inn:800+inn, w1+inn*2:b_w] = warp_W
+        # 배경 이미지에 좌우 이미지 합성
+        # 이미지 크기 640*480
+        # 480-320 : 480+320
+        background1[160+inn:800+inn, 0:w1] = warp_E
+        background1[160+inn:800+inn, w1+inn*2:b_w] = warp_W
 
-        #or연산을 이용하여 배경이미지에 상하 이미지 합성
-        roiN = background[0:h2, 160+inn:800+inn]
-        roiS = background[h2+inn*2:b_h, 160+inn:800+inn]
+        background_WE = background1[200:800, 200:800]
+        #cv2.imshow('backwe1', background_WE)
+
+        b = background1.copy()
+
+        # or연산을 이용하여 배경이미지에 상하 이미지 합성
+        background2[0:h2, 160+inn:800+inn] = warp_N
+        background2[h2+inn*2:b_h, 160+inn:800+inn] = warp_S
+        background_NS = background2[200:800, 200:800]
+
+        # 기존 방식
+        roiN = b[0:h2, 160+inn:800+inn]
+        roiS = b[h2+inn*2:b_h, 160+inn:800+inn]
 
         bit_n = cv2.bitwise_or(roiN, warp_N)
         bit_s = cv2.bitwise_or(roiS, warp_S)
 
-        background[0:h2, 160+inn:800+inn] = bit_n
-        background[h2+inn*2:b_h, 160+inn:800+inn] = bit_s
+        b[0:h2, 160+inn:800+inn] = bit_n
+        b[h2+inn*2:b_h, 160+inn:800+inn] = bit_s
+        b = b[200:800, 200:800]
 
-        #검정부분 잘라내기
-        background = background[200:800, 200:800]
+        #cv2.imshow('backwe', background_WE)
+        #cv2.imshow('backns', background_NS)
+
+        # 겹치는 부분
+        white_color = (255,255,255)
+        mask = np.zeros((600,600,3),dtype = np.uint8)
+        pt1 = np.array([[0,0],[300,240],[600,0],[360,300],[600,600],[300,360],[0,600],[240,300]], np.int32)
+        mask = cv2.polylines(mask,[pt1], True, white_color)
+
+        white_star = cv2.fillPoly(mask, [pt1], white_color)
+        black_star = cv2.bitwise_not(white_star)
+        #cv2.imshow('white', white_star)
+        #cv2.imshow('black', black_star)
+
+        dup_WE = cv2.bitwise_and(background_WE, white_star)
+        dup_NS = cv2.bitwise_and(background_NS, white_star)
+
+        #cv2.imshow('dup_WE', dup_WE)
+        #cv2.imshow('dup_NS', dup_NS)
+
+        # 가중치
+        alpha = 0.5
+        star = cv2.addWeighted(dup_WE, alpha, dup_NS, (1-alpha), 0)
+        #cv2.imshow('star', star)
+
+        # 겹치는 부분 제외
+        x_star = cv2.bitwise_and(b, black_star)
+        #cv2.imshow('x_star', x_star)
+
+        # 기존 결과
+        #cv2.imshow('b', b)
+
+        # 가중치 합성결과
+        dst_NS = cv2.bitwise_or(dup_NS, x_star)
+        dst_WE = cv2.bitwise_or(dup_WE, x_star)
+
+        # Fill 0 values in dst_NS with corresponding values from dst_WE
+        dst_NS[dst_NS == 0] = dst_WE[dst_NS == 0]
 
         sendstring = "C:/Users/user/UnityGraduate/PythonStream/test" + str(count) +".png"
 
-        cv2.imwrite(sendstring,background)
+        cv2.imwrite(sendstring,dst_NS)
         sock.sendall(sendstring.encode("UTF-8"))
         temp = receivedData
         count = count + 1
