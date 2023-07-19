@@ -26,6 +26,7 @@ receivedData = ""
 def exit_handler():
     exitmsg = "bye bye!"
     test2(exitmsg)
+
     sock.close()
     
 
@@ -105,7 +106,7 @@ while True:
 
         #이격 20
         #검정색 배경 이미지 생성
-        inn = 20
+        inn = 18
         b_w = 960+inn*2
         b_h = 960+inn*2
         background1 = np.zeros((b_w, b_h, 3), dtype=np.uint8)*255
