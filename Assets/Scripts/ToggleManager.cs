@@ -10,8 +10,13 @@ public class ToggleManager : MonoBehaviour
     private StreamingManager streamingManager;
     private SocketManager socketManager;
     private string ImgPath;
-    int framecounter;
+    static private ToggleManager instance;
+    public int framecounter;
     // Start is called before the first frame update
+
+    public static ToggleManager Instance = null;
+
+
 
     public bool State()
     {
@@ -28,9 +33,13 @@ public class ToggleManager : MonoBehaviour
     {
         return framecounter;
     }
-
+    private void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
+        instance = this;
         toggle = GetComponent<Toggle>();
         toggletext = toggle.GetComponentInChildren<Text>();
         streamingManager = GetComponent<StreamingManager>();

@@ -12,7 +12,7 @@ public class PythonManager : MonoBehaviour
 {
     Process py = new Process();
     string pyPath = @"C:\Users\" + Environment.UserName + @"\UnityGraduate\";
-    string yourPythonPath = "python";
+    string yourPythonPath = "C:/Users/user/yolov5-master/venvyolo/Scripts/python.exe";
 
 #if UNITY_EDITOR
     //테스트용, 에디터에서만 실행가능
@@ -25,7 +25,7 @@ public class PythonManager : MonoBehaviour
         try
         {
             py.StartInfo.FileName = yourPythonPath;
-            py.StartInfo.Arguments = pyPath + "Calibration.py";
+            py.StartInfo.Arguments = pyPath + "Graduate.py";
             py.StartInfo.CreateNoWindow = true;
             py.StartInfo.UseShellExecute = false;
             py.Start();
@@ -42,6 +42,7 @@ public class PythonManager : MonoBehaviour
         try
         {
             py.StartInfo.FileName = yourPythonPath;
+            py.StartInfo.Arguments = pyPath + "Calibration.py";
             py.StartInfo.Arguments = pyPath + "Calibration.py";
             py.StartInfo.CreateNoWindow = true;
             py.StartInfo.UseShellExecute = false;

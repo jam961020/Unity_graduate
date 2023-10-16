@@ -10,7 +10,6 @@ using System.Diagnostics;
 
 public class StreamingManager : MonoBehaviour
 {
-    private ToggleManager toggleManager;
     public Camera streamcameraN;
     public Camera streamcameraS;
     public Camera streamcameraW;
@@ -27,7 +26,6 @@ public class StreamingManager : MonoBehaviour
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 24;
 
-        //toggleManager = GetComponent<ToggleManager>();
         resWidth = 640;
         resHeight = 480;
 
@@ -139,6 +137,7 @@ public class StreamingManager : MonoBehaviour
         screenShot.Apply();
 
         byte[] bytes = screenShot.EncodeToPNG();
+
         File.WriteAllBytes(name, bytes);
 
         Destroy(rt);
