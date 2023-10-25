@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using TMPro.Examples;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -23,6 +25,7 @@ public class PhysicsMovment : MonoBehaviour
     public GameObject robot;
     public float followAngle = 80;
     public bool framecounter  = false;
+    public TextMeshProUGUI statustext;
     private bool notuTurn = true;
     private float[] distanceArray = new float[2];
     private float distanceDifferenceL = 0;
@@ -41,13 +44,14 @@ public class PhysicsMovment : MonoBehaviour
 
     private void FixedUpdate()
     {
+        List<float> status = new List<float>();
         GameManager.Situation situation = gm.ReturnSituation();
         if (situation == GameManager.Situation.BeforeEntering/* && gm.streamStart()*/)
         {
             gostrait();
             if (gm.returnFrameCounter() > 2)
             {
-                constantVelocityMovment();
+                status = constantVelocityMovment();
             }
             Debug.Log("FrameCounter : " + gm.returnFrameCounter());
         }
@@ -85,7 +89,7 @@ public class PhysicsMovment : MonoBehaviour
             {
                 gostrait();
             }
-            constantVelocityMovment();
+            status = constantVelocityMovment();
         }
         else if (situation == GameManager.Situation.ReEntry || !notuTurn)
         {
@@ -102,7 +106,15 @@ public class PhysicsMovment : MonoBehaviour
         else
         {
             targetSpeed = 0f;
-            constantVelocityMovment();
+            status = constantVelocityMovment();
+        }
+        if (situation == GameManager.Situation.JobFinish)
+        {
+            statustext.text = "Steering Angle:\t-" + "\nTorque:\t-" + "\nAngle:\t-" + "\nVelocity:\t-";
+        }
+        else
+        {
+            statustext.text = "Steering Angle:\t" + (float)Math.Round(wheels[0].steerAngle,4) + "\nTorque:\t" + (float)Math.Round(status[1], 4) + "\nAngle:\t" + angleCalculate(Math.Round(robot.transform.eulerAngles.y,2)) +  "\nVelocity:\t" + (float)Math.Round(status[0],4);
         }
     }
     void gostrait()
@@ -129,7 +141,7 @@ public class PhysicsMovment : MonoBehaviour
             }
         }
     }
-    void constantVelocityMovment()
+    List<float> constantVelocityMovment()
     {
        
         rb.AddForce(-transform.up * downForceValue * rb.velocity.magnitude);
@@ -150,24 +162,48 @@ public class PhysicsMovment : MonoBehaviour
         //Debug.Log("curretn motorTorque : " + wheels[0].motorTorque);
         //Debug.Log("currentSpeed : " + currentSpeed);
         //Debug.Log("speedError: " + speedError);
+        List<float> returnvalue = new List<float> { };
+        returnvalue.Add(currentSpeed);
+        returnvalue.Add(speedError * Mathf.Abs(speedError) * power / wheels.Length);
+        return returnvalue;
     }
     void uTurn()
     {
         Debug.Log(robot.transform.eulerAngles);
-        if (robot.transform.eulerAngles.y < 179 || robot.transform.eulerAngles.y > 181 )
+        float startingdistance = gm.returnStartingDistance();
+        if (startingdistance < 400)
         {
-            notuTurn = false;
-            for (int i = 0; i < 2; i++)
+            if (robot.transform.eulerAngles.y > 169 || robot.transform.eulerAngles.y <191)
             {
-                wheels[i].steerAngle = 45f;
+                lateralMovement();
+                Debug.Log("È¾ÀÌµ¿Áß");
             }
+            else
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    wheels[i].steerAngle = 0f;
+                }
+            }
+            notuTurn = false;
         }
         else
         {
-            notuTurn = true;
-            for (int i = 0; i < 2; i++)
+            if (robot.transform.eulerAngles.y < 179 || robot.transform.eulerAngles.y > 181)
             {
-                wheels[i].steerAngle = 0;
+                notuTurn = false;
+                for (int i = 0; i < 2; i++)
+                {
+                    wheels[i].steerAngle = 45f;
+                }
+                followAngle = 80;
+            }
+            else
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    wheels[i].steerAngle = 0f;
+                }
             }
         }
         float currentSpeed = 0;
@@ -217,6 +253,20 @@ public class PhysicsMovment : MonoBehaviour
             {
                 wheels[i].steerAngle = 0;
             }
+        }
+    }
+    private string angleCalculate(double angle)
+    {
+        if (angle >= 0 && angle < 90) {
+            return "R" + Math.Round(angle,4);
+        } else if(angle >= 90 && angle < 180) {
+            return "rR" + Math.Round(180 - angle,4);
+        } else if(angle >= 180 && angle < 270)
+        {
+            return "rL" + Math.Round(angle - 180,4);
+        }else
+        {
+            return "L" + Math.Round(360 - angle,4);
         }
     }
     public bool returnuTurn() => notuTurn;

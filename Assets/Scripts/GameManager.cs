@@ -44,7 +44,9 @@ public class GameManager : MonoBehaviour
     public List<RectTransform> rectTransformList;
     public TextMeshProUGUI situationtext;
     public WheelCollider[] wheels = new WheelCollider[4];
+    public GameObject particle;
     Rigidbody rb;
+    private float startingdistance = 9999;
     private float standardangle = 90;
     private float standarddistance = 0;
     private Situation currentState;
@@ -202,7 +204,7 @@ public class GameManager : MonoBehaviour
             List<float> points = ConvertTofloats(strpoint);
             List<float> linelocation = linelocationavg(points);
 
-            textMeshProUGUIList[i].text = "CLASS : " + ExtractAlphabets(cls) + "\nDEGREE : " + degree + "\nDISTANCE : " + distance/100.0;
+            textMeshProUGUIList[i].text = "CLASS : " + ExtractAlphabets(cls) + "\nAngle : " + degree + "\nDISTANCE : " + distance/100.0;
             rectTransformList[i].position = new Vector3(linelocation[0]*2/3+1520, 400-linelocation[1]*2/3+680, 0);
             if(currentState == Situation.ReEntry)
             {
@@ -224,32 +226,38 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                startingdistance = distance;
                     UnityEngine.Debug.Log("notTurn~");
                     // 상태 변화
-                    if (distance < 200 && currentState != Situation.Passing)
+                    if (distance < 85 && currentState != Situation.Passing)
                     {
                         previoustate = currentState;
                         currentState = Situation.Passing;
+                        particle.SetActive(false);
                     }
-                    else if (distance > 200 & currentState == Situation.Passing)
+                    else if (distance > 85 & currentState == Situation.Passing)
                     {
                         if (previoustate == Situation.BeforeEntering)
                         {
                             currentState = Situation.Painting;
                             paintingcounter += 1;
+                            particle.SetActive(true);
                         }
                         else if (previoustate == Situation.Painting && paintingcounter != 2)
                         {
                             currentState = Situation.ReEntry;
+                            particle.SetActive(false);
                         }
                         else if (previoustate == Situation.ReEntry)
                         {
                             currentState = Situation.Painting;
                             paintingcounter += 1;
+                            particle.SetActive(true);
                         }
                         else if (previoustate == Situation.Painting && paintingcounter == 2)
                         {
                             currentState = Situation.JobFinish;
+                            particle.SetActive(false);
                         }
                         UnityEngine.Debug.Log(paintingcounter);
                     }
@@ -312,6 +320,8 @@ public class GameManager : MonoBehaviour
     public Situation ReturnSituation() => currentState;
     public int returnFrameCounter() => framecounter;
 
+    public float returnStartingDistance() => startingdistance;
+
     //public bool streamStart() => start;
 
     void Awake()
@@ -343,7 +353,7 @@ public class GameManager : MonoBehaviour
             Streaming(framecounter);
             socketflag = true;
         }
-        situationtext.text = currentState.ToString();
+            situationtext.text = currentState.ToString();
     }
 
     private void OnApplicationQuit()
