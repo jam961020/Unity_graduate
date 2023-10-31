@@ -338,6 +338,8 @@ public class GameManager : MonoBehaviour
         unitypath = path + @"UnityStream2\";
         pythonpath = path + @"PythonStream\";
         currentState = Situation.BeforeEntering;
+        
+        SetResolution();
     }
 
     private void FixedUpdate()
@@ -360,5 +362,13 @@ public class GameManager : MonoBehaviour
     { 
         Removeunitydir();
         Removepydir();
+    }
+
+    public void SetResolution()
+    {
+        int setWidth = 1920;
+        int setHeight = 1080;
+
+        Screen.SetResolution(setWidth, setHeight, true);
     }
 }
